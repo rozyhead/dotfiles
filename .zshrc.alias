@@ -1,0 +1,11 @@
+# エイリアス設定
+alias g="git"
+alias gfl="git flow"
+alias gfs="git flow feature start"
+alias gff="git flow feature finish"
+alias gst="git status -sb && git stash list"
+alias gcm="git commit -v"
+alias gch="git cherry -v"
+alias glgg="git lgg"
+alias glg="git lgg | head"
+

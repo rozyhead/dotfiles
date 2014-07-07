@@ -186,9 +186,7 @@ esac
 
 
 ## load user .zshrc configuration file
-#
 [ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
 
-
 #THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
-[[ -s "/Users/rozyhead/.gvm/bin/gvm-init.sh" ]] && source "/Users/rozyhead/.gvm/bin/gvm-init.sh"
+[[ -s "${HOME}/.gvm/bin/gvm-init.sh" ]] && source "${HOME}/.gvm/bin/gvm-init.sh"
