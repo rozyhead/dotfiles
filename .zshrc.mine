@@ -1,0 +1,161 @@
+if [ -f /Applications/MacVim.app/Contents/MacOS/Vim ]; then
+  export EDITOR=/Applications/MacVim.app/Contents/MacOS/Vim
+  alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+  alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+fi
+
+#   typeset
+#    -U 重複パスを登録しない
+#    -x exportも同時に行う
+#    -T 環境変数へ紐付け
+#
+#   path=xxxx(N-/)
+#     (N-/): 存在しないディレクトリは登録しない
+#     パス(...): ...という条件にマッチするパスのみ残す
+#        N: NULL_GLOBオプションを設定。
+#           globがマッチしなかったり存在しないパスを無視する
+#        -: シンボリックリンク先のパスを評価
+#        /: ディレクトリのみ残す
+#        .: 通常のファイルのみ残す
+
+# 重複パスを登録しない
+typeset -U path cdpath fpath manpath
+
+# sudo用のpathを設定
+typeset -xT SUDO_PATH sudo_path
+typeset -U sudo_path
+sudo_path=({/usr/local,/usr,}/sbin(N-/))
+
+# path
+path=(~/bin(N-/) /usr/local/bin(N-/) ${path})
+
+# 自作の補間関数用ディレクトリ
+fpath=(~/.zsh/functions/Completion(N-/) ${fpath})
+# zsh-completions
+#  https://github.com/zsh-users/zsh-completions.git
+fpath=(~/.zsh/functions/Completion/zsh-completions(N-/) ${fpath})
+# .zshrcでコメントアウトした設定を追加
+autoload -U compinit
+compinit
+
+# cdrを有効化
+zstyle ':completion:*' menu select
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+zstyle ':completion:*:descriptions' format '%BCompleting%b %U%d%u'
+typeset -ga chpwd_functions
+#if is-at-least 4.3.11; then
+  autoload -U chpwd_recent_dirs cdr
+  chpwd_functions+=chpwd_recent_dirs
+  zstyle ":chpwd:*" recent-dirs-max 500
+  zstyle ":chpwd:*" recent-dirs-default true
+  zstyle ":completion:*" recent-dirs-insert always
+#fi
+
+# vcs_info
+autoload vcs_info
+# gitのみ有効にする
+zstyle ":vcs_info:*" enable git
+# commitしていない変更をチェックする
+zstyle ":vcs_info:git:*" check-for-changes true
+# gitリポジトリに対して、変更情報とリポジトリ情報を表示する
+zstyle ":vcs_info:git:*" formats "%c%u[%b:%r]"
+# gitリポジトリに対して、コンフリクトなどの情報を表示する
+zstyle ":vcs_info:git:*" actionformats "%c%u<%a>[%b:%r]"
+# addしていない変更があることを示す文字列
+zstyle ":vcs_info:git:*" unstagedstr "<U>"
+# commitしていないstageがあることを示す文字列
+zstyle ":vcs_info:git:*" stagedstr "<S>"
+
+# git：まだpushしていないcommitあるかチェックする
+my_git_info_push () {
+	if [ "$(git remote 2>/dev/null)" != "" ]; then
+		local head="$(git rev-parse HEAD)"
+		local remote
+		for remote in $(git rev-parse --remotes) ; do
+			if [ "$head" = "$remote" ]; then return 0 ; fi
+		done
+		# pushしていないcommitがあることを示す文字列
+		echo "<P>"
+	fi
+}
+
+# git：stashに退避したものがあるかチェックする
+my_git_info_stash () {
+	if [ "$(git stash list 2>/dev/null)" != "" ]; then
+		# stashがあることを示す文字列
+		echo "{s}"
+	fi
+}
+
+# vcs_infoの出力に独自の出力を付加する
+my_vcs_info () {
+	vcs_info
+	echo $(my_git_info_stash)$(my_git_info_push)$vcs_info_msg_0_
+}
+
+# プロンプト定義の中で置換を使用する
+setopt prompt_subst
+
+# プロンプト定義
+RPROMPT=$'$(my_vcs_info)'
+
+# GO
+if [ -x "`which go`" ]; then
+  export GOROOT=`go env GOROOT`
+  export GOPATH=$HOME
+  export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+fi
+
+# peco
+function peco-select-history() {
+  local tac
+  if which tac > /dev/null; then
+    tac="tac"
+  else
+    tac="tail -r"
+  fi
+  BUFFER=$(history -n 1 | \
+      eval $tac | \
+      peco --query "$LBUFFER")
+  CURSOR=$#BUFFER
+  zle clear-screen
+}
+zle -N peco-select-history
+
+function peco-select-src() {
+  local selected_dir=$(ghq list --full-path | peco --query "$LBUFFER")
+  if [ -n "$selected_dir" ]; then
+    BUFFER="cd ${selected_dir}"
+    zle accept-line
+  fi
+  zle clear-screen
+}
+zle -N peco-select-src
+
+function peco-select-cdr() {
+  local selected_dir=$(cdr -l | \
+      sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
+      peco --query "$LBUFFER")
+  if [ -n "$selected_dir" ]; then
+    BUFFER="cd ${selected_dir}"
+    zle accept-line
+  else
+    zle reset-prompt
+  fi
+}
+zle -N peco-select-cdr
+
+bindkey '^r' peco-select-history
+bindkey '^@' peco-select-src
+bindkey '^g' peco-select-cdr
+
+# エイリアス設定
+alias g="git"
+alias gfl="git flow"
+alias gfs="git flow feature start"
+alias gff="git flow feature finish"
+alias gst="git status -sb && git stash list"
+alias gcm="git commit -v"
+alias gch="git cherry -v"
+alias glgg="git lgg"
+alias glg="git lgg | head"
