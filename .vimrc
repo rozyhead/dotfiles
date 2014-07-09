@@ -33,7 +33,9 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 " 行末の半角スペースを可視化
 NeoBundle 'bronson/vim-trailing-whitespace'
 " 対応する括弧等を自動入力
-NeoBundle "kana/vim-smartinput"
+NeoBundle 'kana/vim-smartinput'
+" markdown
+NeoBundle 'plasticboy/vim-markdown'
 
 call neobundle#end()
 
@@ -84,6 +86,13 @@ set statusline+=%{fugitive#statusline()}
 """"""""""""""""""""""""""""""
 " vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
 let g:indent_guides_enable_on_vim_startup = 1
+
+
+""""""""""""""""""""""""""""""
+" vim-markdown.vimの設定
+""""""""""""""""""""""""""""""
+" .md, .markdownをmarkdownにする
+au BufRead,BufNewFile *.md,*.markdown set filetype=markdown
 
 
 " http://inari.hatenablog.com/entry/2014/05/05/231307
@@ -219,3 +228,14 @@ syntax on
 colorscheme desert
 " 行番号の色
 highlight LineNr ctermfg=darkyellow
+
+
+""""""""""""""""""""""""""""""
+" キーバインド
+""""""""""""""""""""""""""""""
+" ESC ESCで検索ハイライト解除
+nnoremap <Esc><Esc> :noh<Return>
+" ウィンドウの上下分割
+nnoremap - :split<Return>
+" ウィンドウの左右分割
+nnoremap \| :vsplit<Return>
