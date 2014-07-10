@@ -14,7 +14,7 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 
-function peco-select-src() {
+function peco-select-ghq() {
   local selected_dir=$(ghq list --full-path | peco --query "$LBUFFER")
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
@@ -22,7 +22,7 @@ function peco-select-src() {
   fi
   zle clear-screen
 }
-zle -N peco-select-src
+zle -N peco-select-ghq
 
 function peco-select-cdr() {
   local selected_dir=$(cdr -l | \
@@ -37,7 +37,7 @@ function peco-select-cdr() {
 }
 zle -N peco-select-cdr
 
-bindkey '^r' peco-select-history
-bindkey '^@' peco-select-src
-bindkey '^g' peco-select-cdr
+bindkey '^v' peco-select-history
+bindkey '^g' peco-select-ghq
+bindkey '^r' peco-select-cdr
 

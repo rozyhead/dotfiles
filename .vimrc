@@ -20,6 +20,15 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 " Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+" 非同期実行
+NeoBundle 'Shougo/vimproc.vim', {
+  \  'build': {
+  \    'windows': 'tools\\update-dll-mingw',
+  \    'cygwin': 'make -f make_cygwin.mak',
+  \    'mac': 'make -f make_mac.mak',
+  \    'unix': 'make -f make_unix.mak',
+  \  },
+  \}
 " ファイルオープンを便利に
 NeoBundle 'Shougo/unite.vim'
 " Unite.vimで最近使ったファイルを表示できるようにする
@@ -53,14 +62,33 @@ NeoBundleCheck
 """"""""""""""""""""""""""""""
 " 入力モードで開始する
 let g:unite_enable_start_insert=1
+" 大文字小文字を区別しない
+let g:unite_enable_ignore_case=1
+let g:unite_enable_smart_case=1
+" [unite]を定義
+nnoremap [unite] <Nop>
+nmap <Space>u [unite]
+" grep検索
+nnoremap <silent> [unite]g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+" カーソル位置の単語をgrep検索
+nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
+" grep検索結果の再呼出
+nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer<CR>
+" unite grep に ag(The Silver Searcher) を使う
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  let g:unite_source_grep_recursive_opt = ''
+endif
+
 " バッファ一覧
-noremap <C-P> :Unite buffer<CR>
+noremap [unite]b :Unite buffer<CR>
 " ファイル一覧
-noremap <C-N> :Unite -buffer-name=file file<CR>
-" 最近使ったファイルの一覧
-noremap <C-Z> :Unite file_mru<CR>
+noremap [unite]f :Unite -buffer-name=file file<CR>
 " sourcesを「今開いているファイルのディレクトリ」とする
-noremap :uff :<C-u>UniteWithBufferDir file -buffer-name=file<CR>
+noremap [unite]ff :<C-u>UniteWithBufferDir file -buffer-name=file<CR>
+" 最近使ったファイルの一覧
+noremap [unite]h :Unite file_mru<CR>
 " ウィンドウを分割して開く
 au FileType unite nnoremap <silent> <buffer> <expr> <C-J> unite#do_action('split')
 au FileType unite inoremap <silent> <buffer> <expr> <C-J> unite#do_action('split')
@@ -117,7 +145,7 @@ endif
 """"""""""""""""""""""""""""""
 " 挿入モード時、ステータスラインの色を変更
 """"""""""""""""""""""""""""""
-let g:hi_insert = 'highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none'
+let g:hi_insert = 'highlight StatusLine guifg=white guibg=darkcyan gui=none ctermfg=white ctermbg=darkcyan cterm=none'
 
 if has('syntax')
   augroup InsertHook
@@ -190,8 +218,6 @@ set browsedir=buffer
 set smartcase
 " 検索結果をハイライト表示する
 set hlsearch
-" 暗い背景色に合わせた配色にする
-set background=dark
 " タブ入力を複数の空白入力に置き換える
 set expandtab
 " 検索ワードの最初の文字を入力した時点で検索を開始する
@@ -224,18 +250,25 @@ set fileencodings=utf-8,cp932,euc-jp
 set fileformats=unix,dos
 " 構文毎に文字色を変化させる
 syntax on
+" 暗い背景色に合わせた配色にする
+set background=dark
 " カラースキーマの指定
-colorscheme desert
+colorscheme molokai
 " 行番号の色
-highlight LineNr ctermfg=darkyellow
+"highlight LineNr ctermfg=darkyellow
 
 
 """"""""""""""""""""""""""""""
 " キーバインド
 """"""""""""""""""""""""""""""
 " ESC ESCで検索ハイライト解除
-nnoremap <Esc><Esc> :noh<Return>
+nnoremap <silent> <Esc><Esc> :nohlsearch<Return>
 " ウィンドウの上下分割
-nnoremap - :split<Return>
+nnoremap <silent> - :split<Return>
 " ウィンドウの左右分割
-nnoremap \| :vsplit<Return>
+nnoremap <silent> \| :vsplit<Return>
+" vimgrep後の検索結果移動
+nnoremap <silent> [q :cprevious<Return>
+nnoremap <silent> ]q :cnext<Return>
+nnoremap <silent> [Q :<C-u>cfirst<Return>
+nnoremap <silent> ]Q :<C-u>clast<Return>
