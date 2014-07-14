@@ -145,7 +145,7 @@ endif
 """"""""""""""""""""""""""""""
 " 挿入モード時、ステータスラインの色を変更
 """"""""""""""""""""""""""""""
-let g:hi_insert = 'highlight StatusLine guifg=white guibg=darkcyan gui=none ctermfg=white ctermbg=darkcyan cterm=none'
+let g:hi_insert = 'highlight StatusLine guifg=black guibg=cyan gui=none ctermfg=black ctermbg=cyan cterm=none'
 
 if has('syntax')
   augroup InsertHook
