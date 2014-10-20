@@ -52,3 +52,4 @@ typeset -ga chpwd_functions
 [ -f ${HOME}/.zshrc.alias ] && source ${HOME}/.zshrc.alias
 [ -f ${HOME}/.zshrc.peco ] && source ${HOME}/.zshrc.peco
 [ -f ${HOME}/.zshrc.tmux ] && source ${HOME}/.zshrc.tmux
+[ -f ${HOME}/.zshrc.aws ] && source ${HOME}/.zshrc.aws

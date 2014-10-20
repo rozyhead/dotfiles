@@ -196,6 +196,8 @@ set tags=~/.tags
 set noswapfile
 " バックアップを作成しない
 set nobackup
+" アンドゥファイルを作成しない
+set noundofile
 " カーソルが何行目の何列目に置かれているかを表示する
 set ruler
 " コマンドラインに使われる画面上の行数
@@ -267,8 +269,3 @@ nnoremap <silent> <Esc><Esc> :nohlsearch<Return>
 nnoremap <silent> - :split<Return>
 " ウィンドウの左右分割
 nnoremap <silent> \| :vsplit<Return>
-" vimgrep後の検索結果移動
-nnoremap <silent> [q :cprevious<Return>
-nnoremap <silent> ]q :cnext<Return>
-nnoremap <silent> [Q :<C-u>cfirst<Return>
-nnoremap <silent> ]Q :<C-u>clast<Return>
