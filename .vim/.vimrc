@@ -6,59 +6,35 @@ filetype off
 """"""""""""""""""""""""""""""
 " プラグインのセットアップ
 """"""""""""""""""""""""""""""
-if has('vim_starting')
-  set nocompatible               " Be iMproved
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-  " Required:
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
-endif
-
-" Required:
-call neobundle#begin(expand('~/.vim/bundle/'))
-
-" Let NeoBundle manage NeoBundle
-" Required:
-NeoBundleFetch 'Shougo/neobundle.vim'
-
-" 非同期実行
-NeoBundle 'Shougo/vimproc.vim', {
-  \  'build': {
-  \    'windows': 'tools\\update-dll-mingw',
-  \    'cygwin': 'make -f make_cygwin.mak',
-  \    'mac': 'make -f make_mac.mak',
-  \    'unix': 'make -f make_unix.mak',
-  \  },
-  \}
+Plugin 'VundleVim/Vundle.vim'
 " ファイルオープンを便利に
-NeoBundle 'Shougo/unite.vim'
+Plugin 'Shougo/unite.vim'
 " Unite.vimで最近使ったファイルを表示できるようにする
-NeoBundle 'Shougo/neomru.vim'
+Plugin 'Shougo/neomru.vim'
 " ファイルをtree表示してくれる
-NeoBundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 " Gitを便利に使う
-NeoBundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " インデントに色を付けて見やすくする
-NeoBundle 'nathanaelkane/vim-indent-guides'
+Plugin 'nathanaelkane/vim-indent-guides'
 " 行末の半角スペースを可視化
-NeoBundle 'bronson/vim-trailing-whitespace'
+Plugin 'bronson/vim-trailing-whitespace'
 " 対応する括弧等を自動入力
-NeoBundle 'kana/vim-smartinput'
+Plugin 'kana/vim-smartinput'
 " markdown
-NeoBundle 'plasticboy/vim-markdown'
+Plugin 'plasticboy/vim-markdown'
+" dracula-theme
+Plugin 'dracula/vim'
 
-call neobundle#end()
-
-" Required:
+call vundle#end()
 filetype plugin indent on
 
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
-NeoBundleCheck
-
-
-" http://blog.remora.cx/2010/12/vim-ref-with-unite.html
 """"""""""""""""""""""""""""""
 " Unit.vimの設定
+" http://blog.remora.cx/2010/12/vim-ref-with-unite.html
 """"""""""""""""""""""""""""""
 " 入力モードで開始する
 let g:unite_enable_start_insert=1
@@ -255,7 +231,7 @@ syntax on
 " 暗い背景色に合わせた配色にする
 set background=dark
 " カラースキーマの指定
-colorscheme molokai
+colorscheme dracula
 " 行番号の色
 "highlight LineNr ctermfg=darkyellow
 
