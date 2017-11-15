@@ -1,25 +1,30 @@
 [user]
-	name = T.Miyajima
-	email = rozyhead@gmail.com
+  name = Takeshi Miyajima
+  email = rozyhead@gmail.com
 [color]
-	diff = auto
-	status = auto
-	branch = auto
-	ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  ui = auto
 [github]
-	user = rozyhead
+  user = rozyhead
 [alias]
-	co = checkout
-	st = status -sb
-	pr = pull --rebase
-	fo = fetch origin
-	ro = rebase origin
-	rc = rebase --continue
-	wd = diff --word-diff
-	lg = log --graph --pretty=oneline --decorate --date=short --abbrev=commit --branches
-	lgr = log --graph --date-order --pretty=format:'%Cblue%h %Cgreen%ci %Cred%an %Cblue%m %Creset%s %Cred%d'
-	lgg = log --stat --pretty=format:'%Cblue%h %Cgreen%ar %Cred%an %Creset%s %Cred%d'
+  co = checkout
+  cm = commit -v
+  st = status -sb
+  br = branch
+  pr = pull --rebase
+  fo = fetch origin
+  ro = rebase origin
+  rc = rebase --continue
+  wd = diff --word-diff
+  lg = log --graph --pretty=oneline --decorate --date=short --abbrev=commit --branches
+  lgr = log --graph --date-order --pretty=format:'%Cblue%h %Cgreen%ci %Cred%an %Cblue%m %Creset%s %Cred%d'
+  lgg = log --stat --pretty=format:'%Cblue%h %Cgreen%ar %Cred%an %Creset%s %Cred%d'
 [push]
-	default = tracking
+  default = tracking
 [ghq]
   root = ~/src
+[core]
+  editor = vim
+  autoCRLF = false
